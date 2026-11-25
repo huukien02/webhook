@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    // Bản cá nhân không đăng nhập: ai biết endpointId (ngẫu nhiên, 21 ký tự) thì xem được.
+    // Client không bao giờ được ghi; mọi ghi/xoá đi qua API route (Admin SDK).
+    match /endpoints/{endpointId} {
+      allow get: if true;
+      allow list, write: if false;
+
+      match /requests/{requestId} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+  }
+}
